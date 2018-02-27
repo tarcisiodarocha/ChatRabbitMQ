@@ -197,7 +197,40 @@ O lado receptor do chat, deve receber o arquivo também em background sem bloque
 File "aula1.pdf" from @tarcisio downloaded!
 ```
 
+### Listar todos os usuários
+
+O chat deve disponibilizar operação para listar todos os uauários do chat. Ex:
+
+```
+@marciocosta>> !listUsers
+tarcisio, marciocosta, faviosantos, monicaferraz
+@marciocosta>> 
+```
+Para implementar essa operação, deve-se usar a API HTTP de Gerenciamento do RabbitMQ: https://cdn.rawgit.com/rabbitmq/rabbitmq-management/v3.7.3/priv/www/api/index.html
+
+### Listar todos os grupos
+
+O chat deve disponibilizar operação para listar todos os grupos dos quais o usuário (que está chamando a operação) faz parte. Ex:
+
+```
+@marciocosta>> !listGroup
+ufs, amigos, familia
+@marciocosta>> 
+```
+Para implementar essa operação, deve-se usar a API HTTP de Gerenciamento do RabbitMQ: https://cdn.rawgit.com/rabbitmq/rabbitmq-management/v3.7.3/priv/www/api/index.html
 
 
+## Replicação do servidor RabbitMQ visando alta disponibilidade
+
+O servidor RabbitMQ possui um recurso de clusterização onde pode-se configurar diversas instâncias diferentes do RabbitMQ Server para trabalharem em conjunto oferecendo um serviço único. Para esse trabalho, devem ser criadas três instâncias do RabbitMQ configuradas como cluster. Deve-se configurar as instâncias de modo que elas repliquem todas as filas entre elas. Com isso, se uma instância cair, o serviço do RabbitMQ e as filas permanecerão disponíveis.
+
+Para isso, deve-se pesquisar a documentação do RabbitMQ em:
+
+* https://www.rabbitmq.com/clustering.html
+* https://www.rabbitmq.com/ha.html
+
+## Repositório base para o trabalho
+
+Esse trabalho deve ser feito a partir do seguinte repositório base:
 
 https://classroom.github.com/a/7G_WRqkb
