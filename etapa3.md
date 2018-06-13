@@ -26,7 +26,7 @@ Depois que o arquivo for transferido do chat emissor para o servidor do RabbitMQ
 ```
 Arquivo "/home/tarcisio/aula1.pdf" está disponível para @marciocosta !
 ```
-O lado receptor do chat, deve receber o arquivo também em background sem bloqueios. É realizado automaticamente o download de arquivos a serem recebidos em uma pasta default (ex: /home/tarcisio/chat/downloads). Quando um download for completado, deve ser exibida a mensagem '(<data> às <hora>) Arquivo <nome-do-arquivo> recebido de @<id-do-emissor>!' no lado receptor. Exemplo: 
+O lado receptor do chat, deve receber o arquivo também em background sem bloqueios. É realizado automaticamente o download de arquivos a serem recebidos em uma pasta default (ex: /home/tarcisio/chat/downloads). Quando um download for completado, deve ser exibida a mensagem ```(<data> às <hora>) Arquivo <nome-do-arquivo> recebido de @<id-do-emissor>!``` no lado receptor. Exemplo: 
 
 ```
 (21/09/2016 às 20:55) Arquivo "aula1.pdf" recebido de @tarcisio !
