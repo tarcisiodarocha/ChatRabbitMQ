@@ -1,5 +1,7 @@
 ## Instalar RabbitMQ Server na AWS
 
+(Obs: Instalação opcional na AWS com o Amazon Linux ao invés do Ubuntu Server https://dzone.com/articles/installing-rabbitmq-37-along-with-erlang-version-2)
+
 Criar uma nova instância EC2 na AWS com o Ubuntu Server 16.04. 
 
 Acessar a instância via ssh.
