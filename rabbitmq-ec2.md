@@ -8,27 +8,45 @@ Acessar a instância via ssh.
 
 Instalar o RabbitMQ Server na instância conforme os passos a seguir:
 
-### Passo 1 – Instalar o Erlang
+### Passo 1 – Ataulizar Ubuntu e Instalar o Erlang
 
-```
-wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-sudo dpkg -i erlang-solutions_1.0_all.deb
-```
 ```
 sudo apt-get update
-sudo apt-get install erlang erlang-nox
+sudo apt-get upgrade
 ```
 
-### Passo 2 – Instalar RabbitMQ Server
+```
+wget http://packages.erlang-solutions.com/site/esl/esl-erlang/FLAVOUR_1_general/esl-erlang_20.1-1~ubuntu~xenial_amd64.deb
+sudo dpkg -i esl-erlang_20.1-1\~ubuntu\~xenial_amd64.deb
+```
+Pode acontecer um erro de dependência do comando anterior. Instale as dependências com o comando:
 
 ```
-echo 'deb http://www.rabbitmq.com/debian/ testing main' | sudo tee /etc/apt/sources.list.d/rabbitmq.list
+sudo apt-get install -f
+```
+
+E reexecute o comando para instalar o Erlang:
+
+```
+sudo dpkg -i esl-erlang_20.1-1\~ubuntu\~xenial_amd64.deb
+```
+
+### Passo 2 – Instalar e Iniciar o RabbitMQ Server
+
+```
+echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | sudo tee /etc/apt/sources.list.d/bintray.rabbitmq.list
 wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | sudo apt-key add -
 ```
 ```
 sudo apt-get update
 sudo apt-get install rabbitmq-server
 ```
+
+```
+sudo systemctl start rabbitmq-server.service
+sudo systemctl enable rabbitmq-server.service
+```
+
 
 ### Passo 3 – Criar Admin User no RabbitMQ
 
