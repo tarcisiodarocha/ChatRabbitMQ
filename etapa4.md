@@ -6,3 +6,7 @@ Para isso, deve-se pesquisar a documentação do RabbitMQ em:
 
 * https://www.rabbitmq.com/clustering.html
 * https://www.rabbitmq.com/ha.html
+
+## Utilizar um balanceador de carga para os nós do cluster RabbitMQ
+
+Utilizar o balanceador de carga da AWS: https://aws.amazon.com/pt/elasticloadbalancing/
