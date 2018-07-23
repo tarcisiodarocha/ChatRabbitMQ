@@ -13,7 +13,7 @@ Utilizar o serviço de balanceamento de carga da AWS: https://aws.amazon.com/pt/
 
 Criar dois balanceadores de carga diferentes para o chat, um para a interface web de gerenciamento (http) e outro para o protocolo AMQP.
 
-Passos gerais para criar cada balanceador de carga na AWS:
+Passos gerais para criar um balanceador de carga na AWS:
 
 * Criar um Elastic IP para o balanceador
 * Criar um novo balanceador tipo "network"
