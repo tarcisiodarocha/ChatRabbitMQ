@@ -16,8 +16,8 @@ sudo apt-get upgrade
 ```
 
 ```
-wget http://packages.erlang-solutions.com/site/esl/esl-erlang/FLAVOUR_1_general/esl-erlang_22.0.1-1~ubuntu~bionic_amd64.deb
-sudo dpkg -i esl-erlang_22.0.1-1~ubuntu~bionic_amd64.deb
+wget https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_22.2-1~ubuntu~bionic_amd64.deb
+sudo dpkg -i esl-erlang_22.2-1~ubuntu~bionic_amd64.deb
 ```
 Pode acontecer um erro de dependência do comando anterior. Instale as dependências com o comando:
 
@@ -28,13 +28,13 @@ sudo apt-get install -f
 E reexecute o comando para instalar o Erlang:
 
 ```
-sudo dpkg -i esl-erlang_22.0.1-1~ubuntu~bionic_amd64.deb
+sudo dpkg -i esl-erlang_22.2-1~ubuntu~bionic_amd64.deb
 ```
 
 ### Passo 2 – Instalar e Iniciar o RabbitMQ Server
 
 ```
-echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | sudo tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+echo "deb https://dl.bintray.com/rabbitmq/debian bionic main" | sudo tee /etc/apt/sources.list.d/bintray.rabbitmq.list
 wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | sudo apt-key add -
 ```
 ```
