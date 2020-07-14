@@ -8,21 +8,21 @@ Acessar a instância via ssh.
 
 Instalar o RabbitMQ Server na instância conforme os passos a seguir:
 
-### Passo 1 – Ataulizar Ubuntu e Instalar o Erlang
+### Passo 1 – Atualizar Ubuntu e Instalar o Erlang
 
 ```
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt update
+sudo apt upgrade
 ```
 
 ```
-wget https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_22.2-1~ubuntu~bionic_amd64.deb
-sudo dpkg -i esl-erlang_22.2-1~ubuntu~bionic_amd64.deb
+wget https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_23.0.2-2~ubuntu~bionic_amd64.deb
+sudo dpkg -i esl-erlang_23.0.2-2~ubuntu~bionic_amd64.deb
 ```
 Pode acontecer um erro de dependência do comando anterior. Instale as dependências com o comando:
 
 ```
-sudo apt-get install -f
+sudo apt install -f
 ```
 
 E reexecute o comando para instalar o Erlang:
@@ -38,8 +38,8 @@ echo "deb https://dl.bintray.com/rabbitmq/debian bionic main" | sudo tee /etc/ap
 wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | sudo apt-key add -
 ```
 ```
-sudo apt-get update
-sudo apt-get install rabbitmq-server
+sudo apt update
+sudo apt install rabbitmq-server
 ```
 
 ```
