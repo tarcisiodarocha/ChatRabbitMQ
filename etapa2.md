@@ -38,7 +38,7 @@ Apesar, de nesse exemplo anterior, o usuário estar em uma seção de envio de m
 
 ### Inclusão de usuários em um grupo
 
-Para incluir um usuário em um grupo deve-se usar o comando `toGroup` seguido dos parametros nome do usuario e nome do grupo. No RabbitMQ, incluir um usuário em um grupo deve correponder a associar uma fila a um exchange usando um metodo de bind. Exemplo onde se adiciona os usuários "marciocosta" e "joaosantos" ao grupo amigos:
+Para incluir um usuário em um grupo deve-se usar o comando `addUser` seguido dos parametros nome do usuario e nome do grupo. No RabbitMQ, incluir um usuário em um grupo deve correponder a associar uma fila a um exchange usando um metodo de bind. Exemplo onde se adiciona os usuários "marciocosta" e "joaosantos" ao grupo amigos:
 
 ```
 @marciocosta>> !addUser joaosantos amigos
