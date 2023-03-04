@@ -75,7 +75,7 @@ Mensagens recebidas dentro do contexto de um grupo são exibidas de forma semelh
 
 ### Exclusão usuário de um grupo
 
-Devem ser incluidos também comandos para excluir um grupo e remover um usuário do grupo.Para remover um usuário de um determinado grupo, deve-se diponibilizar o comando "delFromGroup" seguido do <nome do usuário> e do <nome do grupo>. Exemplo:
+Devem ser incluidos também comandos para excluir um grupo e remover um usuário do grupo. Para remover um usuário de um determinado grupo, deve-se diponibilizar o comando "delFromGroup" seguido do <nome do usuário> e do <nome do grupo>. Exemplo:
 
 ```
 @marciocosta>> !delFromGroup joaosantos amigos
