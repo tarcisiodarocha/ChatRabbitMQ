@@ -5,8 +5,6 @@ package ChatRabbitMQ;
 option java_package = "br.ufs.dcomp.ChatRabbitMQ";
 option java_outer_classname = "MensagemProto";
 
-syntax = "proto3";
-
 message Mensagem{
      string emissor = 1; // Nome do emissor
      string data = 2; // Data de envio

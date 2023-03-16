@@ -4,6 +4,7 @@ import com.rabbitmq.client.*;
 
 import java.io.IOException;
 import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.ByteString;
 
 import java.io.*;
 import java.util.Scanner;
@@ -15,14 +16,15 @@ public class Chat {
 
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("172.31.52.44");
+    factory.setHost("54.196.28.123");
     factory.setUsername("admin");
     factory.setPassword("password");
     factory.setVirtualHost("/");
-    Connection connection = factory.newConnection();
-    Channel channel = connection.createChannel();
-    String[] grupos = 
     
+    System.out.println("> criando conexão...");
+    Connection connection = factory.newConnection();
+    System.out.println("> criando canal...");
+    Channel channel = connection.createChannel();
     
     Scanner scanner = new Scanner(System.in);
     System.out.print("User: ");
@@ -34,7 +36,7 @@ public class Chat {
     
     String preText = ">> ";
     String sendTo = "";
-    String grupoNome = """;
+    String grupoNome = "";
     while(true) {
       scanner = new Scanner(System.in);
       System.out.print(preText);
@@ -81,7 +83,7 @@ public class Chat {
       
       MensagemProto.Conteudo.Builder bConteudo = MensagemProto.Conteudo.newBuilder();
       bConteudo.setTipo("text/plain");
-      bConteudo.setCorpo(text);
+      bConteudo.setCorpo(ByteString.copyFrom(text.getBytes()));
       bConteudo.setNome(null);
       
       DateTimeFormatter dtf_data = DateTimeFormatter.ofPattern("yyyy/MM/dd");
@@ -99,7 +101,7 @@ public class Chat {
       MensagemProto.Mensagem messagem = bMensagem.build();
       
                       //  (exchange, routingKey, props, message-body             ); 
-      channel.basicPublish(grupoNome     sendTo,  null,  messagem.toByteArray());
+      channel.basicPublish(grupoNome,     sendTo,  null,  messagem.toByteArray());
       
       Consumer consumer = new DefaultConsumer(channel) {
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -115,10 +117,10 @@ public class Chat {
           MensagemProto.Conteudo recConteudo = recMessage.getConteudo();
 
           String tipo = recConteudo.getTipo();
-          String corpo = recConteudo.getCorpo();
+          String corpo = recConteudo.getCorpo().toString();
           String nome = recConteudo.getNome();
 
-          System.out.println("(" + data + ' às ' + hora + ") " + emissor + " diz: " + corpo);
+          System.out.println("(" + data + " às " + hora + ") " + emissor + " diz: " + corpo);
         }
       };
                         //(queue-name, autoAck, consumer);    
