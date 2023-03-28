@@ -23,9 +23,6 @@ public class Chat extends Thread {
     private ConnectionFactory factory;
     private Connection connection;
     private Channel channel;
-    private String preText = ">> ";
-    private String sendTo = "";
-    private String groupName = "";
     private String queueName = "";
 
     public Chat(String connHost, String connUser, String connPass) throws Exception {
