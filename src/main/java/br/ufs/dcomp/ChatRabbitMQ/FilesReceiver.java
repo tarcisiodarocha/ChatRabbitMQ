@@ -4,19 +4,20 @@ import com.google.protobuf.ByteString;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class FilesReceiver extends Receiver{
-    public FilesReceiver(Channel channel, String queueName) {
-        super(channel,queueName);
+    public FilesReceiver(Connection connection, String queueName) {
+        super(connection,queueName);
     }
 
     @Override
-    public void checkQueue() throws Exception {
-        Consumer consumer = new DefaultConsumer(this.getChannel()) {
+    public void checkQueue(Channel channel) throws Exception {
+        Consumer consumer = new DefaultConsumer(channel) {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 // (21/09/2016 às 20:53) marciocosta diz:
 
@@ -41,6 +42,6 @@ public class FilesReceiver extends Receiver{
             }
         };
         //(queue-name, autoAck, consumer);
-        this.getChannel().basicConsume(this.getQueueName(), true, consumer);
+        channel.basicConsume(this.getQueueName(), true, consumer);
     }
 }

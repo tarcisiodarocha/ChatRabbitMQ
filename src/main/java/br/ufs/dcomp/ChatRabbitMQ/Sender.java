@@ -3,6 +3,7 @@ package br.ufs.dcomp.ChatRabbitMQ;
 import com.google.protobuf.ByteString;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -13,13 +14,62 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Sender extends Thread {
+    private Connection connection;
     private Channel channel;
     private String queueName;
     private String preText = ">> ";
     private String sendTo = "";
     private String groupName = "";
-    public Sender(Channel channel, String queueName) {
+    public Sender(Connection connection, String queueName) {
+        this.connection = connection;
+        this.queueName = queueName;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
         this.channel = channel;
+    }
+
+    public String getPreText() {
+        return preText;
+    }
+
+    public void setPreText(String preText) {
+        this.preText = preText;
+    }
+
+    public String getSendTo() {
+        return sendTo;
+    }
+
+    public void setSendTo(String sendTo) {
+        this.sendTo = sendTo;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public void setQueueName(String queueName) {
         this.queueName = queueName;
     }
 
@@ -33,38 +83,35 @@ public class Sender extends Thread {
         switch (command.trim()) {
             case "addGroup":
                 groupName = text.split(" ")[1];
-                this.channel.exchangeDeclare(groupName.trim(), BuiltinExchangeType.FANOUT);
-                this.channel.queueBind(this.queueName.trim(), groupName.trim(), "");
+                this.getChannel().exchangeDeclare(groupName.trim(), BuiltinExchangeType.FANOUT);
+                this.getChannel().queueBind(this.getQueueName().trim(), groupName.trim(), "");
                 System.out.println(groupName + " created");
                 break;
 
             case "addUser":
                 username = text.split(" ")[1];
                 groupName = text.split(" ")[2];
-                this.channel.queueBind(username.trim(), groupName.trim(), "");
+                this.getChannel().queueBind(username.trim(), groupName.trim(), "");
                 break;
 
             case "delFromGroup":
                 username = text.split(" ")[1];
                 groupName = text.split(" ")[2];
-                this.channel.queueUnbind(username.trim(), groupName.trim(), "");
+                this.getChannel().queueUnbind(username.trim(), groupName.trim(), "");
                 break;
 
             case "removeGroup":
                 groupName = text.split(" ")[1];
-                this.channel.exchangeDelete(groupName.trim());
+                this.getChannel().exchangeDelete(groupName.trim());
                 break;
             case "upload":
                 filepath = text.split(" ")[1];
                 System.out.println(command + " " + filepath);
                 try {
                     Path source = Paths.get(filepath);
-                    type = Files.probeContentType(source);
-                    byte[] data = Files.readAllBytes(source);
-                    String receiver = (this.groupName.length() > 0) ? ("#" + this.groupName) : ("@" + this.queueName);
-                    System.out.printf("Enviando %s para %s .\n", filepath, receiver);
-                    this.send(data, String.valueOf(source.getFileName()),type);
-                    System.out.printf("\nArquivo %s foi enviado para %s !\n", filepath, receiver);
+                    Sender fileSender = new FileSender(this.connection, this.queueName, source);
+                    fileSender.start();
+//                    this.send(data, String.valueOf(source.getFileName()), type);
                 }
                 catch (Exception e) {
                     throw new RuntimeException(e);
@@ -88,29 +135,29 @@ public class Sender extends Thread {
         LocalDateTime now = LocalDateTime.now();
 
         MensagemProto.Mensagem.Builder bMessage = MensagemProto.Mensagem.newBuilder();
-        bMessage.setEmissor(this.queueName);
+        bMessage.setEmissor(this.getQueueName());
         bMessage.setData(dtf_data.format(now));
         bMessage.setHora(dtf_hora.format(now));
-        bMessage.setGrupo(this.groupName);
+        bMessage.setGrupo(this.getGroupName());
         bMessage.setConteudo(bContent);
 
         MensagemProto.Mensagem message = bMessage.build();
-
         //  (exchange, routingKey, props, message-body             );
-        this.channel.basicPublish(this.groupName, this.sendTo, null, message.toByteArray());
+        this.getChannel().basicPublish(this.getGroupName(), this.getSendTo(), null, message.toByteArray());
     }
 
     @Override
     public void run(){
+        try {
+            this.setChannel(this.getConnection().createChannel());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         while (true) {
+            String text;
             Scanner scanner = new Scanner(System.in);
             System.out.print(preText);
-            String text = scanner.nextLine();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            text = scanner.nextLine();
 
             if (text.length() == 0) {
                 continue;
@@ -118,21 +165,27 @@ public class Sender extends Thread {
 
             switch (text.charAt(0)) {
                 case '@':
-                    this.preText = text + ">> ";
-                    this.sendTo = text.substring(1);
+                    this.setPreText(text + ">> ");
+                    this.setSendTo(text.substring(1));
 
-                    System.out.print(this.preText);
+                    try {
+                        this.getChannel().queueDeclare(this.getSendTo(), false, false, false, null);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    System.out.print(this.getPreText());
                     scanner = new Scanner(System.in);
                     text = scanner.nextLine();
                     break;
 
                 case '#':
-                    this.preText = text + ">> ";
-                    this.groupName = text.substring(1);
-                    this.sendTo = "";
+                    this.setPreText(text + ">> ");
+                    this.setGroupName(text.substring(1));
+                    this.setSendTo("");
 
                     scanner = new Scanner(System.in);
-                    System.out.print(preText);
+                    System.out.print(this.getPreText());
                     text = scanner.nextLine();
                     break;
 
@@ -144,11 +197,12 @@ public class Sender extends Thread {
                     }
                     break;
                 default:
-                    try {
-                        this.send(text.getBytes(), "", "text/plain");
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    break;
+            }
+            try {
+                this.send(text.getBytes(), "", "text/plain");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }

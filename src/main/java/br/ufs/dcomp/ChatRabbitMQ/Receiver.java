@@ -4,25 +4,27 @@ import com.rabbitmq.client.*;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeoutException;
+
 public class Receiver extends Thread {
-    private Channel channel;
+    private Connection connection;
     private String queueName;
 
-    public Receiver(Channel channel, String queueName) {
-        this.channel = channel;
+    public Receiver(Connection connection, String queueName) {
+        this.connection = connection;
         this.queueName = queueName;
     }
 
-    public Channel getChannel() {
-        return channel;
+    public Connection getConnection() {
+        return connection;
     }
 
     public String getQueueName() {
         return queueName;
     }
 
-    public void checkQueue() throws Exception {
-        Consumer consumer = new DefaultConsumer(this.getChannel()) {
+    public void checkQueue(Channel channel) throws Exception {
+        Consumer consumer = new DefaultConsumer(channel) {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 // (21/09/2016 às 20:53) marciocosta diz:
 
@@ -40,18 +42,24 @@ public class Receiver extends Thread {
 
                 grupo = (grupo.length() > 0) ? ("#" + grupo) : grupo;
 
-                System.out.printf("(%s às %s) %s%s diz: %s%n", data, hora, emissor, grupo, corpo);
+                System.out.printf("\n(%s às %s) %s%s diz: %s%n", data, hora, emissor, grupo, corpo);
             }
         };
         //(queue-name, autoAck, consumer);
-        this.getChannel().basicConsume(this.getQueueName(), true, consumer);
+        channel.basicConsume(this.getQueueName(), true, consumer);
     }
 
     @Override
     public void run() {
-        while (true) {
+        Channel channel;
+        try {
+            channel = this.getConnection().createChannel();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        while(true) {
             try {
-                this.checkQueue();
+                this.checkQueue(channel);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
