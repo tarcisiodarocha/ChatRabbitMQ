@@ -35,7 +35,7 @@ public class FilesReceiver extends Receiver{
 
                 group = (group.length() > 0) ? ("#" + group) : group;
 
-                Path source = Paths.get("C:\\downloads\\" + filename);
+                Path source = Paths.get("~/chat/downloads" + filename);
                 Files.write(source, content, StandardOpenOption.CREATE_NEW);
 
                 System.out.printf("\n(%s às %s) Arquivo \"%s\" recebido de @%s%s%n !\n", date, hour, filename, sender, group);

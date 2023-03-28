@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 
 /**
  * compile: mvn clean compile assembly:single
- * execute: java -jar <jarfile> 52.202.243.26 admin password
- * C:\\Users\\jadso\\Downloads\\ideaIC-2022.3.3.exe
+ * execute: java -jar <jarfile> <host> <username> <password>
  **/
 public class Chat extends Thread {
     private ConnectionFactory factory;
