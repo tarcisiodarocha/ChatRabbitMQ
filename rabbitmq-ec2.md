@@ -65,3 +65,5 @@ sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 ### Passo 6 – Ativar RabbitMQ Web Management Console
 
 ```
+sudo rabbitmq-plugins enable rabbitmq_management
+```
