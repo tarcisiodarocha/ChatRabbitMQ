@@ -26,7 +26,7 @@ O chat tambem deve disponibilizar comandos de criação de grupos e de adição 
 
 ### Criação de Grupos
 
-Para criar um novo grupo, o usuario pode digitar na linha de comando do chat o simbolo `!` seguido do nome do comando `newGroup` seguido do nome do grupo que se deseja criar. Exemplo de criacao de um grupo chamado "amigos":
+Para criar um novo grupo, o usuario pode digitar na linha de comando do chat o simbolo `!` seguido do nome do comando `addGroup` seguido do nome do grupo que se deseja criar. Exemplo de criacao de um grupo chamado "amigos":
 
 ```
 @marciocosta>> !addGroup amigos
