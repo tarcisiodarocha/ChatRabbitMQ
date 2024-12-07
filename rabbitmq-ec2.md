@@ -42,11 +42,16 @@ sudo dpkg -i rabbitmq-server_3.10.7-1_all.deb
 ```
 sudo apt --fix-broken install -y
 ```
+```
+sudo dpkg -i rabbitmq-server_3.10.7-1_all.deb
+```
 
 ### Passo 4 – Iniciar o RabbitMQ Server
 
 ```
 sudo systemctl start rabbitmq-server.service
+```
+```
 sudo systemctl enable rabbitmq-server.service
 ```
 
@@ -57,7 +62,11 @@ Obs: Trocar "password" por uma senha.
 
 ```
 sudo rabbitmqctl add_user admin password 
+```
+```
 sudo rabbitmqctl set_user_tags admin administrator
+```
+```
 sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 ```
 
