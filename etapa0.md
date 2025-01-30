@@ -3,7 +3,7 @@
 
 Esse trabalho deve ser feito a partir do seguinte repositório base:
 
-https://classroom.github.com/a/7G_WRqkb
+https://classroom.github.com/a/MixkfUp0
 
 Passos: 
 
