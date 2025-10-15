@@ -1,6 +1,6 @@
 ## Instalar RabbitMQ Server na AWS
 
-Criar uma nova instância EC2 na AWS com o Ubuntu Server 22.04. 
+Criar uma nova instância EC2 na AWS com o Ubuntu Server 24.04. 
 
 Instalar o RabbitMQ Server na instância conforme os passos a seguir:
 
