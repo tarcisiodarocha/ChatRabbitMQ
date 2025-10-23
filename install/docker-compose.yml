@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq4
+    restart: unless-stopped
+    ports:
+      - "5672:5672"   # Porta para os clientes acessarem via AMQP
+      - "15672:15672" # Porta para acessar a interface de gerenciamento via browser
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - ./data:/var/lib/rabbitmq
+      - ./log:/var/log/rabbitmq
+    networks:
+      - rabbitmq_net
+
+networks:
+  rabbitmq_net:
+    driver: bridge
