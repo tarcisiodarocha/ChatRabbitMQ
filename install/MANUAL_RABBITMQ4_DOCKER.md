@@ -3,8 +3,7 @@
 ## 1. Pré-requisitos
 
 - Instância AWS EC2 com Ubuntu Server 24.04 (t3.micro).
-- Porta 22 aberta (SSH) e portas 5672 e 15672 liberadas no Security Group.
-
+  
 ## 2. Atualizar o sistema
 
 ```bash
@@ -42,25 +41,48 @@ Crie o arquivo `docker-compose.yml` conforme abaixo.
 ## 5. Conteúdo do docker-compose.yml
 
 ```yaml
-version: "3.9"
+# ==============================
+# RabbitMQ 4 Cluster - Docker Compose
+# ==============================
+# Este arquivo define um container RabbitMQ pronto para clusterização.
+# Ele inclui todas as portas necessárias para comunicação entre nós,
+# gerenciamento e acesso de clientes AMQP.
 
 services:
   rabbitmq:
-    image: rabbitmq:4-management
-    container_name: rabbitmq4
-    restart: unless-stopped
+    image: rabbitmq:4-management          # Imagem oficial com plugin de gerenciamento habilitado
+    container_name: rabbitmq4             # Nome fixo do container (opcional alterar por nó)
+    restart: unless-stopped               # Reinicia automaticamente, exceto se parado manualmente
+    hostname: rabbitmq4                   # Nome do host usado pelo RabbitMQ internamente no cluster
     ports:
-      - "5672:5672"   # Porta para os clientes acessarem via AMQP
-      - "15672:15672" # Porta para acessar a interface de gerenciamento via browser
+      - "5672:5672"     # Porta padrão AMQP — usada pelos clientes (aplicações)
+      - "15672:15672"   # Painel de gerenciamento (interface web)
+      - "4369:4369"     # EPMD (Erlang Port Mapper Daemon) — usado para descoberta entre nós
+      - "25672:25672"   # Comunicação interna entre nós do cluster
+      - "35197:35197"   # Porta usada dinamicamente para distribuição de dados (inter-node)
+
     environment:
+      # Usuário e senha padrão do painel de administração e acesso inicial
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: password
+
+      # Cookie Erlang: deve ser idêntico em todos os nós do cluster.
+      # É o token de autenticação entre as instâncias RabbitMQ.
+      RABBITMQ_ERLANG_COOKIE: "CLUSTER_SECRET_TOKEN"
+
     volumes:
+      # Diretório local persistente para armazenar dados (filas, mensagens, etc.)
       - ./data:/var/lib/rabbitmq
+      # Diretório local para logs
       - ./log:/var/log/rabbitmq
+
     networks:
       - rabbitmq_net
 
+# ==============================
+# Rede
+# ==============================
+# A rede bridge conecta o container ao ambiente local.
 networks:
   rabbitmq_net:
     driver: bridge
