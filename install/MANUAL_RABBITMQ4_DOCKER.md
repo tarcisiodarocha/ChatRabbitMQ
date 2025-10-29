@@ -28,6 +28,12 @@ docker --version
 docker compose version
 ```
 
+Permitir uso do Docker sem sudo:
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
 ## 4. Criar diretórios e arquivos
 
 ```bash
