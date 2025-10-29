@@ -36,9 +36,17 @@ mkdir -p ~/rabbitmq/log
 cd ~/rabbitmq
 ```
 
-Crie o arquivo `docker-compose.yml` conforme abaixo.
+
 
 ## 5. Conteúdo do docker-compose.yml
+
+Com o nano, crie o arquivo docker-compose.yml
+
+```bash
+nano docker-compose.yml
+```
+
+Cole e salve o conteúdo a seguir.
 
 ```yaml
 # ==============================
