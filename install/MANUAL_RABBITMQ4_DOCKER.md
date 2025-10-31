@@ -3,9 +3,7 @@
 ## 1. Pré-requisitos
 
 - Instância AWS EC2 com Ubuntu Server 24.04 (t3.micro).
-- Configurar o Grupo de Segurança da instância EC2 para liberar as portas: 5672, 15672, 4369:4369"     # EPMD (Erlang Port Mapper Daemon) — usado para descoberta entre nós
-      - "25672:25672"   # Comunicação interna entre nós do cluster
-      - "35197:35197"   # Porta usada dinamicamente para distribuição de dados (inter-node)
+- Configurar o Grupo de Segurança da instância EC2 para liberar as portas: 5672, 15672, 4369, 25672, 35197
   
 ## 2. Atualizar o sistema
 
