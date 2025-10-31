@@ -8,11 +8,7 @@ Inicialmente, esse projeto usará uma instância do RabbitMQ instalada no servi�
 
 ### Criação do Repositório para o Projeto
 
-Esse projeto deve ser feito a partir do seguinte repositório base a ser criado automaticamento pelo GitHub Classroom clicando no link a seguir: 
-
-https://classroom.github.com/a/7G_WRqkb
-
-Somente um integrante do grupo precisa criar o repositório a partir do link acima. Os demais integrantes do grupo devem ser inseridos posteriormente como colaboradores do repositório para que todos os membros do grupo tenham acesso.
+Esse projeto deve ser feito a partir do repositório base a ser criado automaticamento pelo GitHub Classroom através de um link fornecido pelo professor. Somente um integrante do grupo precisa criar o repositório a partir do link fornecido. Os demais integrantes do grupo devem ser inseridos posteriormente como colaboradores do repositório para que todos os membros do grupo tenham acesso.
 
 ### Instruções para criar e submeter cada etapa em branches diferentes
 
