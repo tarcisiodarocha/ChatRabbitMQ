@@ -9,9 +9,9 @@ public class Chat {
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
     
-    factory.setHost("ip-da-instancia-da-aws");          // Alterar
-    factory.setUsername("usuário-do-rabbitmq-server");  // Alterar nome
-    factory.setPassword("senha-do-rabbitmq-server");    // Alterar
+    factory.setHost("3.85.93.173");         // IP do RabbitMq Docker!
+    factory.setUsername("admin");            // Alterar nome
+    factory.setPassword("senha");        // Alterar
     factory.setVirtualHost("/");
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();

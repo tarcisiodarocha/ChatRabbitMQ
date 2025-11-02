@@ -1,0 +1,2 @@
+Usar user e senha da instância do RabbitMQ, pode ser do docker.
+Vai usar o de quem? Vou testar e dps aviso [02/11] -Rafa.
