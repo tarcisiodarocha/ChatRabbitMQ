@@ -66,9 +66,9 @@ Cole e salve o conteúdo a seguir.
 services:
   rabbitmq:
     image: rabbitmq:4-management          # Imagem oficial com plugin de gerenciamento habilitado
-    container_name: rabbitmq4             # Nome fixo do container (opcional alterar por nó)
+    container_name: rabbitmq              # Nome fixo do container (opcional alterar por nó)
     restart: unless-stopped               # Reinicia automaticamente, exceto se parado manualmente
-    hostname: rabbitmq4                   # Nome do host usado pelo RabbitMQ internamente no cluster
+    hostname: rabbitmq1                   # Nome do host usado pelo RabbitMQ internamente no cluster
     ports:
       - "5672:5672"     # Porta padrão AMQP — usada pelos clientes (aplicações)
       - "15672:15672"   # Painel de gerenciamento (interface web)
@@ -80,6 +80,8 @@ services:
       # Usuário e senha padrão do painel de administração e acesso inicial
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: password
+
+      RABBITMQ_NODENAME: rabbit@rabbitmq1
 
       # Cookie Erlang: deve ser idêntico em todos os nós do cluster.
       # É o token de autenticação entre as instâncias RabbitMQ.
