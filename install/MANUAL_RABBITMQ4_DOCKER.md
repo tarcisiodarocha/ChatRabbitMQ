@@ -4,6 +4,12 @@
 
 - Instância AWS EC2 com Ubuntu Server 24.04 (t3.micro).
 - Configurar o Grupo de Segurança da instância EC2 para liberar as portas: 5672, 15672, 4369, 25672, 35197
+- Acessar instância via SSH:
+
+```bash
+chmod 400 <nome-da-chave-ssh>
+ssh -i <nome-da-chave-ssh> ubuntu@<ipv4-publico-da-instancia>
+```
   
 ## 2. Atualizar o sistema
 
