@@ -2,8 +2,8 @@
 
 ## 1. Pré-requisitos
 
-- Instância AWS EC2 com Ubuntu Server 24.04 (t3.micro).
-- Configurar o Grupo de Segurança da instância EC2 para liberar as portas: 5672, 15672, 4369, 25672, 35197
+- Criar grupo de segurança e liberar as portas: 22, 5672, 15672, 4369, 25672, 35197
+- Criar instância AWS EC2 com Ubuntu Server 24.04 (t3.micro).
 - Acessar instância via SSH:
 
 ```bash
