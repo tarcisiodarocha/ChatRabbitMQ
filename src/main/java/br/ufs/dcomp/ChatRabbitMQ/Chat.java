@@ -27,19 +27,31 @@ public class Chat {
 
     channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
+    final String[] destinatario = {""};
+
     Consumer consumer = new DefaultConsumer(channel) {
       public void handleDelivery(String consumerTag, Envelope envelope,
           AMQP.BasicProperties properties, byte[] body) throws IOException {
 
         String message = new String(body, "UTF-8");
-        System.out.println("\n" + message);
-        System.out.print("<< ");
+
+        String[] partes = message.split(":", 2);
+        String remetente = partes[0];
+        String texto = partes.length > 1 ? partes[1].trim() : "";
+
+        java.time.LocalDateTime agora = java.time.LocalDateTime.now();
+        java.time.format.DateTimeFormatter formatter =
+            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
+
+        String dataFormatada = agora.format(formatter);
+
+        System.out.print("\r");
+        System.out.println("(" + dataFormatada + ") " + remetente + " diz: " + texto);
+        System.out.print("@" + destinatario[0] + "<< ");
       }
     };
 
     channel.basicConsume(QUEUE_NAME, true, consumer);
-
-    String destinatario = "";
 
     System.out.print("<< ");
 
@@ -48,12 +60,12 @@ public class Chat {
       String input = scanner.nextLine();
 
       if (input.startsWith("@")) {
-        destinatario = input.substring(1);
-        System.out.print("@" + destinatario + "<< ");
+        destinatario[0] = input.substring(1);
+        System.out.print("@" + destinatario[0] + "<< ");
         continue;
       }
 
-      if (destinatario.isEmpty()) {
+      if (destinatario[0].isEmpty()) {
         System.out.println("Escolha um destinatário com @usuario");
         System.out.print("<< ");
         continue;
@@ -63,12 +75,12 @@ public class Chat {
 
       channel.basicPublish(
           "",
-          destinatario,
+          destinatario[0],
           null,
           mensagem.getBytes("UTF-8")
       );
 
-      System.out.printl("@" + destinatario + "<< ");
+      System.out.print("@" + destinatario[0] + "<< ");
     }
   }
 }
