@@ -4,31 +4,84 @@ import com.rabbitmq.client.*;
 
 import java.io.IOException;
 
-public class Chat {
+import com.google.protobuf.ByteString;
 
-  public static void main(String[] argv) throws Exception {
-    ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("ip-da-instancia-da-aws"); // Alterar
-    factory.setUsername("usuário-do-rabbitmq-server"); // Alterar
-    factory.setPassword("senha-do-rabbitmq-server"); // Alterar
-    factory.setVirtualHost("/");
-    Connection connection = factory.newConnection();
-    Channel channel = connection.createChannel();
-    
-    String QUEUE_NAME = "minha-fila";
-                      //(queue-name, durable, exclusive, auto-delete, params); 
-    channel.queueDeclare(QUEUE_NAME, false,   false,     false,       null);
-    
-    Consumer consumer = new DefaultConsumer(channel) {
-      public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)           throws IOException {
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
 
-        String message = new String(body, "UTF-8");
-        System.out.println(message);
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
-      }
-    };
-                      //(queue-name, autoAck, consumer);    
-    channel.basicConsume(QUEUE_NAME, true,    consumer);
-    
-  }
+
+/**
+ * compile: mvn clean compile assembly:single
+ * execute: java -jar <jarfile> <host> <username> <password>
+ **/
+public class Chat extends Thread {
+    private ConnectionFactory factory;
+    private Connection connection;
+    private Channel channel;
+    private String queueName = "";
+
+    public Chat(String connHost, String connUser, String connPass) throws Exception {
+        this.factory = new ConnectionFactory();
+        this.factory.setHost(connHost);
+        this.factory.setUsername(connUser);
+        this.factory.setPassword(connPass);
+        this.factory.setVirtualHost("/");
+
+        System.out.println("> connecting...");
+        this.connection = this.factory.newConnection();
+        System.out.println("> creating channel...");
+        this.channel = this.connection.createChannel();
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
+    }
+
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("User: ");
+        try {
+            String queueName = scanner.nextLine();
+            this.setQueueName(queueName);
+            //(queue-name, durable, exclusive, auto-delete, params);
+            this.getChannel().queueDeclare(this.getQueueName(),false,false,false,null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        Sender sender = new Sender(this.getConnection(), this.getQueueName());
+        Receiver receiver = new Receiver(this.getConnection(), this.getQueueName());
+        FilesReceiver filesReceiver = new FilesReceiver(this.getConnection(), this.getQueueName());
+
+        sender.start();
+        receiver.start();
+        filesReceiver.start();
+    }
+
+    public static void main(String[] arg) throws Exception {
+        if(arg.length != 3) {
+            System.out.println("java -jar <jarfile> <host> <username> <password>");
+            return;
+        }
+
+        Chat chat = new Chat(arg[0], arg[1], arg[2]);
+        chat.run();
+    }
 }
