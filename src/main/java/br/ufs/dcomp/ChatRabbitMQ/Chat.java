@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Chat {
@@ -17,9 +19,21 @@ public class Chat {
     private static final DateTimeFormatter FMT_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FMT_HORA = DateTimeFormatter.ofPattern("HH:mm");
 
+    // Quorum Queue: replicação em 3 nós (fator configurado na etapa 4).
+    // durable=true é obrigatório para quorum queues.
+    private static final Map<String, Object> QUEUE_ARGS = new HashMap<>();
+    static {
+        QUEUE_ARGS.put("x-queue-type", "quorum");
+        QUEUE_ARGS.put("x-quorum-initial-group-size", 3);
+    }
+
     public static void main(String[] argv) throws Exception {
+        // Aceita o endereço do servidor (ou NLB) como argumento opcional.
+        // Uso: java -jar Chat.jar <host>
+        String host = argv.length > 0 ? argv[0] : "18.206.187.39";
+
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("18.206.187.39");
+        factory.setHost(host);
         factory.setUsername("admin");
         factory.setPassword("password");
         factory.setVirtualHost("/");
@@ -32,7 +46,7 @@ public class Chat {
         System.out.print("User: ");
         String usuario = scanner.nextLine().trim();
 
-        channel.queueDeclare(usuario, false, false, false, null);
+        channel.queueDeclare(usuario, true, false, false, QUEUE_ARGS);
 
         // destinatario[0]: nome do destino atual (usuário ou grupo)
         // ehGrupo[0]: true quando o destino é um grupo
@@ -199,7 +213,7 @@ public class Chat {
                 String user  = args[0];
                 String grupo = args[1];
                 // declara a fila do usuário caso ele ainda não tenha se conectado
-                channel.queueDeclare(user, false, false, false, null);
+                channel.queueDeclare(user, true, false, false, QUEUE_ARGS);
                 channel.queueBind(user, EXCHANGE_PREFIX + grupo, "");
                 System.out.println("Usuário '" + user + "' adicionado ao grupo '" + grupo + "'.");
                 break;
